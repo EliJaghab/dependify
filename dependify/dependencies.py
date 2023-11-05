@@ -7,10 +7,10 @@ from dependify.utils import extract_imports, find_python_files, parse_python_fil
 logging = getLogger(__name__)
 
 
-class Dependify:
+class Dependencies:
     def __init__(self, root_dir: str, project_name: str):
         """
-        Initialize a Dependify instance.
+        Initialize a Dependencies instance.
 
         Args:
             root_dir (str): Root directory of the project.
@@ -22,7 +22,7 @@ class Dependify:
         self.root_dir = root_dir
         self.project_name = project_name
 
-    def get_dependencies(self) -> Dict[str, List[str]]:
+    def get_test_dependencies(self) -> Dict[str, List[str]]:
         """
         Get the dependency graph of the test files in the specified project.
 
@@ -30,10 +30,14 @@ class Dependify:
             Dict[str, List[str]]: Map of test files to lists of dependencies.
                 Example: {"tests/test_utils.py": ["src/utils.py", "src/helpers.py"]}
         """
+        logging.info("Getting dependencies...")
         test_files = find_python_files(os.path.join(self.root_dir, "tests"))
         dependency_map = {}
+        logging.info(f"Found {len(test_files)} test files.")
         for test_file in test_files:
+            logging.info("Analyzing test file: {test_file}")
             self._analyze_test_file(test_file, dependency_map)
+        logging.info("Done.")
         return {k: list(v) for k, v in dependency_map.items()}
 
     def _get_internal_dependencies(self, module_file: str) -> Set[str]:

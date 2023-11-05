@@ -1,6 +1,6 @@
-.PHONY: check
+.PHONY: format
 
 format:
-	black .
-	isort .
-	flake8 .
+	black . --exclude venv
+	isort . --skip venv
+	flake8 . --exclude venv
